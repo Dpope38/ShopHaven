@@ -8,7 +8,6 @@ import AppError from "../utils/appError.js";
 const getAllCategories = asyncHandler(async (req, res, next) => {
   const categories = await Category.find();
   // eslint-disable-next-line no-undef
-  console.log(process.env);
   res.status(200).json({
     status: "success",
     data: {
@@ -25,16 +24,15 @@ const createCategory = asyncHandler(async (req, res, next) => {
   const checkCategory = await Category.findOne({
     name: { $regex: new RegExp(`^${name}$`, "i") },
   });
-  console.log(checkCategory);
 
   if (checkCategory) {
-    const err = new AppError("Category already exists", 400);
-    return next(err);
+    throw new AppError("Category already exists", 400);
   }
 
   // create category
   const category = await Category.create({
     name: name.toLowerCase(),
+    user: req.userAuth.id,
   });
   res.status(201).json({
     status: "success",
@@ -46,13 +44,12 @@ const createCategory = asyncHandler(async (req, res, next) => {
 });
 
 // Fetch single category
-const getCategory = asyncHandler(async (req, res, next) => {
+const getSingleCategory = asyncHandler(async (req, res, next) => {
   const category = await Category.findById(req.params.id);
 
   // Check if category exists
   if (!category) {
-    const err = new AppError("Category not found", 404);
-    return next(err);
+    throw new AppError("Category not found", 404);
   }
 
   res.status(200).json({
@@ -77,8 +74,7 @@ const updateCategoryCtrl = asyncHandler(async (req, res, next) => {
     { new: true },
   );
   if (!category) {
-    const err = new AppError("Category not found", 404);
-    return next(err);
+    throw new AppError("Category not found", 404);
   }
 
   res.status(200).json({
@@ -94,8 +90,7 @@ const updateCategoryCtrl = asyncHandler(async (req, res, next) => {
 const deleteCategoryctrl = asyncHandler(async (req, res, next) => {
   const category = await Category.findByIdAndDelete(req.params.id);
   if (!category) {
-    const err = new AppError("Category not found", 404);
-    return next(err);
+    throw new AppError("Category not found", 404);
   }
 
   res.status(201).json({
@@ -107,7 +102,7 @@ const deleteCategoryctrl = asyncHandler(async (req, res, next) => {
 export {
   getAllCategories,
   createCategory,
-  getCategory,
+  getSingleCategory,
   updateCategoryCtrl,
   deleteCategoryctrl,
 };
