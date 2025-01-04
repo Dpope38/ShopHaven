@@ -9,7 +9,6 @@ const createProducts = asyncHandler(async (req, res, next) => {
     req.body;
 
   const productExist = await Product.findOne({ name });
-  console.log(`this is ${productExist}`);
 
   //CHECK IF PRODUCT already exists...
 
@@ -26,7 +25,7 @@ const createProducts = asyncHandler(async (req, res, next) => {
     category,
     sizes,
     colors,
-    user: req.userAuth,
+    user: req.userAuth.id,
     price,
     totalQty,
   });
@@ -38,4 +37,13 @@ const createProducts = asyncHandler(async (req, res, next) => {
   });
 });
 
-export { createProducts };
+// Get all products
+const getProducts = asyncHandler(async (req, res, next) => {
+  const products = await Product.find();
+
+  res.status(200).json({
+    status: "success",
+    products,
+  });
+});
+export { createProducts, getProducts };
