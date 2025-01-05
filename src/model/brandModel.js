@@ -1,19 +1,18 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const brandSchema = new Schema(
   {
-    brandName: {
+    name: {
       type: String,
-      required: [true, "Provide brand name"],
+      required: [true, "please provide brand name"],
     },
     user: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     products: [
       {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
       },
     ],
@@ -23,6 +22,6 @@ const brandSchema = new Schema(
   },
 );
 
-const Brand = model("Brand", brandSchema);
+const Brand = mongoose.model("Brand", brandSchema);
 
 export default Brand;

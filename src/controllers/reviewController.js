@@ -1,37 +1,56 @@
-// import Review from "../model/review.js";
-// import Product from "../model/productModel.js";
+/* eslint-disable no-unused-vars */
+import Product from "../model/productModel.js";
+import Review from "../model/review.js";
+import AppError from "../utils/appError.js";
+import asyncHandler from "../utils/asyncErrorHandler.js";
 
-// /**
-// * @desc Create a review
+/**
+//  * @desc Create a review
 //  * @route POST /api/v1/reviews
-//  @ access admin/private
-//  */
+// @ access admin/private
+ */
 
-// const createReview = async (req, res) => {
-//   const { rating, message } = req.body;
-//   const { productId } = req.params;
+const createReview = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  const { product, message, rating } = req.body;
 
-//   const productFound = await Product.findById(productId).populate("reviews");
-//   if (!productFound) {
-//     // throw new Error("Product not found.");
-//     return res.status(404).json({
-//         message:
-//     })
-//   }
+  // Check if product exists
+  const productFound = await Product.findById(productId).populate("reviews");
+  if (!productFound) {
+    throw new AppError("Product not found", 404);
+  }
+  // Check if user has already reviewed this product
+  // const existingReview = await Review.findOne({
+  //   user: req.userAuth,
+  //   product: productId,
+  // });
+  // console.log(existingReview);
+  const hasReviewed = productFound.reviews.find((review) => {
+    console.log(review);
+    return review.user.toString() === req.userAuth.toString();
+  });
+  console.log(hasReviewed);
+  if (hasReviewed) {
+    throw new AppError("You have already reviewed this product", 400);
+  }
 
-//   /* check for an existing user...
-//    And also avoid duplication of same user reviewing more than once*/
+  // Create the review with proper references
+  const review = await Review.create({
+    message,
+    rating,
+    product: productId, // Use productId directly, not productId._id
+    user: req.userAuth,
+  });
 
-//   const hasReviewed = productFound.reviews.find((review) => {
-//     return "found";//review.user.toString() === req.userAuthId.toString();
-//   });
-//   if (hasReviewed) {
-//     return res.status(400).json({ message: "You have already reviewed this product" });
-//   }
-//    const review = await Review.create({
-//     message,
-//     rating,
-//     product: productFound._id,
-//     user,
-//   });
-// };
+  // // Push review reference to product and save
+  productFound.reviews.push(review._id);
+  await productFound.save();
+
+  res.status(201).json({
+    status: "success",
+    message: "Review created successfully",
+    data: review,
+  });
+});
+
+export { createReview };

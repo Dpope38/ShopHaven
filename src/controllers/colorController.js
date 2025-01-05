@@ -1,5 +1,7 @@
-import Color from "../model/color.js";
 import mongoose from "mongoose";
+import Color from "../model/color.js";
+import asyncErrorHandler from "../utils/asyncErrorHandler.js";
+import AppError from "../utils/appError.js";
 
 /*
   @desc get all Color
@@ -7,16 +9,16 @@ import mongoose from "mongoose";
   @access private/admin
  */
 
-const getAllColor = async (req, res) => {
+const getAllColor = asyncErrorHandler(async (req, res) => {
   const color = await Color.find();
 
   res.status(200).json({
     length: color.length,
     status: "Success",
     message: "color fetched successfully",
-    color,
+    data: { color },
   });
-};
+});
 
 /*
   @desc Creates a Color
@@ -24,16 +26,17 @@ const getAllColor = async (req, res) => {
   @access private/admin
  */
 
-const createColor = async (req, res) => {
+const createColor = asyncErrorHandler(async (req, res) => {
   // check if name exist...
   const { name } = req.body;
   const checkedColor = await Color.findOne({ name });
 
   if (checkedColor) {
-    return res.status(400).json({});
+    throw new AppError("Color already exists", 400);
   }
   const createColor = await Color.create({
     name: name.toLowerCase(),
+    user: req.userAuthId,
   });
 
   res.status(201).json({
@@ -43,7 +46,7 @@ const createColor = async (req, res) => {
       createColor,
     },
   });
-};
+});
 
 /*
   @desc get a single  Color
@@ -51,21 +54,18 @@ const createColor = async (req, res) => {
   @access private/admin
  */
 
-const getSingleColor = async (req, res) => {
+const getSingleColor = asyncErrorHandler(async (req, res) => {
   const color = await Color.findById(req.params.id);
 
   if (!Color) {
-    return res.status(404).json({
-      status: "error",
-      message: "color not found",
-    });
+    throw new AppError("Color ID not found", 404);
   }
   res.status(200).json({
     status: "success",
     message: "color fetched successfully",
     data: { color },
   });
-};
+});
 
 /*
   @desc update   Color
@@ -73,12 +73,12 @@ const getSingleColor = async (req, res) => {
   @access private/admin
  */
 
-const updateColorCtrl = async (req, res) => {
+const updateColorCtrl = asyncErrorHandler(async (req, res) => {
   const { name } = req.body;
 
   // check if the id object format is correct (optional)
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    return res.status(400).json({ message: "Invalid Product ID format" });
+    throw new AppError("Invalid ID! Provide a valid ID", 400);
   }
   // update brand
   const color = await Color.findByIdAndUpdate(
@@ -90,33 +90,27 @@ const updateColorCtrl = async (req, res) => {
   );
 
   if (!Color) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Color ID not found",
-    });
+    throw new AppError("Could not Found and update Color!", 404);
   }
 
   res.status(200).json({
     status: "Success",
     message: "color Updated Successfully",
-    color,
+    data: { color },
   });
-};
+});
 
-const deleteColorctrl = async (req, res) => {
+const deleteColorctrl = asyncErrorHandler(async (req, res) => {
   const color = await Color.findByIdAndDelete(req.params.id);
 
   if (!color) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Color ID not found",
-    });
+    throw new AppError("Could not found and delete Color", 400);
   }
   res.status(200).json({
     status: "Success",
     message: "Color deleted Successfully",
   });
-};
+});
 export {
   getAllColor,
   createColor,

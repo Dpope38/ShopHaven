@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 import Product from "../model/productModel.js";
+import Brand from "../model/brandModel.js";
+import Category from "../model/category.js";
 import asyncHandler from "../utils/asyncErrorHandler.js";
 import AppError from "../utils/appError.js";
 
@@ -16,6 +18,19 @@ const createProducts = asyncHandler(async (req, res, next) => {
     throw new AppError("Product already exists", 409);
   }
 
+  const brandChecked = await Brand.findOne({
+    name: { $regex: new RegExp(`^${brand}$`, "i") },
+  });
+  if (!brandChecked) {
+    throw new AppError("Brand does not exist, provide Brand", 404);
+  }
+  // check if category exists
+  const checkCategory = await Category.findOne({
+    name: { $regex: new RegExp(`^${category}$`, "i") },
+  });
+  if (!checkCategory) {
+    throw new AppError("Category does not exist, provide category", 404);
+  }
   // create product...
 
   const product = await Product.create({
@@ -25,10 +40,17 @@ const createProducts = asyncHandler(async (req, res, next) => {
     category,
     sizes,
     colors,
-    user: req.userAuth.id,
+    user: req.userAuth,
     price,
     totalQty,
   });
+  // Push the category to the product
+  checkCategory.products.push(product);
+  await checkCategory.save();
+
+  // Push the Brand to the product
+  brandChecked.products.push(product);
+  await brandChecked.save();
 
   res.status(201).json({
     status: "success",
@@ -95,7 +117,7 @@ const getProducts = asyncHandler(async (req, res, next) => {
     };
   }
 
-  const allProducts = await products;
+  const allProducts = await products.populate("reviews");
 
   res.status(200).json({
     status: "success",
@@ -108,7 +130,7 @@ const getProducts = asyncHandler(async (req, res, next) => {
 
 // Get single product
 const getSingleProduct = asyncHandler(async (req, res, next) => {
-  const product = await Product.findById(req.params.id);
+  const product = await Product.findById(req.params.id).populate("reviews");
 
   if (!product) {
     throw new AppError("Product not found", 404);

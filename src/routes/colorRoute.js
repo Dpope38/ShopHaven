@@ -1,4 +1,5 @@
 import express from "express";
+import isLogin from "../middleware/isLogin.js";
 import {
   getAllColor,
   createColor,
@@ -9,7 +10,7 @@ import {
 
 const colorRoutes = express.Router();
 colorRoutes.get("/", getAllColor);
-colorRoutes.post("/", createColor);
+colorRoutes.post("/", isLogin, createColor);
 colorRoutes.get("/:id", getSingleColor);
 colorRoutes.put("/:id", updateColorCtrl);
 colorRoutes.delete("/:id", deleteColorctrl);

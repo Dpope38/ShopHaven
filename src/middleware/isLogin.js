@@ -12,7 +12,7 @@ const isLogin = asyncErrorHandler(async (req, res, next) => {
   const decoded = await verifyToken(token);
 
   if (decoded) {
-    req.userAuth = decoded;
+    req.userAuth = decoded.id;
     next();
   } else {
     throw new AppError("Invalid token or Token Expired", 401);
