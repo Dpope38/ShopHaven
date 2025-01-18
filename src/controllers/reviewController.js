@@ -1,3 +1,19 @@
+/**
+ * @desc Create a review
+ * @route POST /api/v1/reviews/:productId
+ * @access Admin/Private
+ * @param {Object} req - Express request object
+ * @param {Object} req.params - Request parameters
+ * @param {string} req.params.productId - ID of the product to review
+ * @param {Object} req.body - Request body
+ * @param {string} req.body.product - Product being reviewed
+ * @param {string} req.body.message - Review message
+ * @param {number} req.body.rating - Rating given in the review
+ * @param {Object} req.userAuth - Authenticated user object
+ * @param {Object} res - Express response object
+ * @returns {Promise<void>}
+ * @throws {AppError} If the product is not found or user has already reviewed the product
+ */
 /* eslint-disable no-unused-vars */
 import Product from "../model/productModel.js";
 import Review from "../model/review.js";
@@ -42,7 +58,7 @@ const createReview = asyncHandler(async (req, res) => {
     user: req.userAuth,
   });
 
-  // // Push review reference to product and save
+  //  Push review reference to product and save
   productFound.reviews.push(review._id);
   await productFound.save();
 

@@ -1,3 +1,41 @@
+/**
+ * Handles CastError from the database.
+ * @param {Object} err - The error object.
+ * @returns {AppError} - The formatted AppError object.
+ */
+
+/**
+ * Handles duplicate field errors from the database.
+ * @param {Object} err - The error object.
+ * @returns {AppError} - The formatted AppError object.
+ */
+
+/**
+ * Handles validation errors from the database.
+ * @param {Object} err - The error object.
+ * @returns {AppError} - The formatted AppError object.
+ */
+
+/**
+ * Sends error response in development mode.
+ * @param {Object} err - The error object.
+ * @param {Object} res - The response object.
+ */
+
+/**
+ * Sends error response in production mode.
+ * @param {Object} err - The error object.
+ * @param {Object} res - The response object.
+ */
+
+/**
+ * Global error handling middleware.
+ * @param {Object} err - The error object.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ */
+
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 // eslint-disable-next-line no-unused-vars
@@ -57,5 +95,4 @@ const globalError = (err, req, res, next) => {
     message: err.message,
   });
 };
-
 export default globalError;

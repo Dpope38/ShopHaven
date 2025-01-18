@@ -1,3 +1,57 @@
+/* eslint-disable no-undef */
+/**
+ * @desc Register a new user
+ * @route POST /api/v1/users/register
+ * @access Private/Admin
+ * @param {Object} req - Express request object
+ * @param {Object} req.body - Request body
+ * @param {string} req.body.fullname - Full name of the user
+ * @param {string} req.body.email - Email of the user
+ * @param {string} req.body.password - Password of the user
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with status, message, and user data
+ */
+
+/**
+ * @desc Login a user
+ * @route POST /api/v1/users/login
+ * @access Public
+ * @param {Object} req - Express request object
+ * @param {Object} req.body - Request body
+ * @param {string} req.body.email - Email of the user
+ * @param {string} req.body.password - Password of the user
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with status, message, token, and user data
+ */
+
+/**
+ * @desc Get user details
+ * @route GET /api/v1/users/me
+ * @access Private
+ * @param {Object} req - Express request object
+ * @param {Object} req.userAuth - Authenticated user ID
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response with status and user data
+ */
+
+/**
+ * @desc Update user's shipping address
+ * @route PUT /api/v1/users/shipping-address
+ * @access Private
+ * @param {Object} req - Express request object
+ * @param {Object} req.body - Request body
+ * @param {string} req.body.firstname - First name of the user
+ * @param {string} req.body.lastname - Last name of the user
+ * @param {string} req.body.address - Address of the user
+ * @param {string} req.body.city - City of the user
+ * @param {string} req.body.postalCode - Postal code of the user
+ * @param {string} req.body.province - Province of the user
+ * @param {string} req.body.country - Country of the user
+ * @param {string} req.body.phone - Phone number of the user
+ * @param {Object} res - Express response object
+ * @param {Object} next - Express next middleware function
+ * @returns {Object} JSON response with status, message, and updated user data
+ */
 /* eslint-disable no-unused-vars */
 import User from "../model/userModel.js";
 import bcrypt from "bcrypt";
@@ -49,12 +103,15 @@ const loginUser = asyncErrorHandler(async (req, res) => {
   }
 
   const token = generateToken(user._id);
-  console.log(token);
   // 3. Verify password
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     throw new AppError("Invalid email or password", 401);
   }
+  res.cookie("bearer", token, {
+    maxAge: process.env.JWT_EPXPIRES_IN,
+    httpOnly: true,
+  });
 
   res.status(200).json({
     status: "success",
@@ -67,18 +124,57 @@ const loginUser = asyncErrorHandler(async (req, res) => {
 });
 
 const getUserCtrl = asyncErrorHandler(async (req, res) => {
-  const token = await getToken(req);
-  const header = await tokenHeader(req);
-  console.log(header);
-  const verified = await verifyToken(token);
-
-  if (!verified) {
-    throw new AppError("Invalid token", 401);
+  const user = await User.findById(req.userAuth).populate("orders");
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
-
   res.status(200).json({
     status: "success",
+    data: {
+      user,
+    },
   });
 });
 
-export { registerUser, loginUser, getUserCtrl };
+const updateShippingAddressCtrl = asyncErrorHandler(async (req, res, next) => {
+  const {
+    firstname,
+    lastname,
+    address,
+    city,
+    postalCode,
+    province,
+    country,
+    phone,
+  } = req.body;
+  const user = await User.findByIdAndUpdate(
+    req.userAuth,
+    {
+      shippingAddress: {
+        firstname,
+        lastname,
+        address,
+        city,
+        postalCode,
+        province,
+        country,
+        phone,
+      },
+      hasShippingAddress: true,
+    },
+    {
+      new: true,
+    },
+  );
+
+  if (!user) {
+    throw new AppError("no Id user  for update", 404);
+  }
+  res.status(200).json({
+    Status: "Successful",
+    message: "User shipping Address updated Successfully",
+    user,
+  });
+});
+
+export { registerUser, loginUser, getUserCtrl, updateShippingAddressCtrl };

@@ -9,17 +9,17 @@ const orderSchema = new Schema(
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: [true, "User is required"],
     },
-    orderItem: [
+    orderItems: [
       {
         type: Object,
-        required: true,
+        required: [true, "Order Item is required"],
       },
     ],
     shippingAddress: {
       type: Object,
-      required: true,
+      required: [true, "Shipping Address is required"],
     },
     orderNumber: {
       type: String,

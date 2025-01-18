@@ -1,3 +1,71 @@
+/**
+ * Creates a new product.
+ * @function
+ * @async
+ * @param {Object} req - Express request object.
+ * @param {Object} req.body - Request body containing product details.
+ * @param {string} req.body.name - Name of the product.
+ * @param {string} req.body.description - Description of the product.
+ * @param {string} req.body.brand - Brand of the product.
+ * @param {string} req.body.category - Category of the product.
+ * @param {Array<string>} req.body.sizes - Sizes available for the product.
+ * @param {Array<string>} req.body.colors - Colors available for the product.
+ * @param {number} req.body.price - Price of the product.
+ * @param {number} req.body.totalQty - Total quantity of the product.
+ * @param {Object} req.files - Files object containing product images.
+ * @param {Object} res - Express response object.
+ * @throws {AppError} If the product already exists.
+ * @throws {AppError} If the brand does not exist.
+ * @throws {AppError} If the category does not exist.
+ * @returns {Promise<void>}
+ */
+
+/**
+ * Retrieves all products with optional filters and pagination.
+ * @function
+ * @async
+ * @param {Object} req - Express request object.
+ * @param {Object} req.query - Query parameters for filtering and pagination.
+ * @param {string} [req.query.name] - Filter by product name.
+ * @param {string} [req.query.category] - Filter by product category.
+ * @param {string} [req.query.brand] - Filter by product brand.
+ * @param {string} [req.query.colors] - Filter by product colors.
+ * @param {string} [req.query.price] - Filter by price range (e.g., "10-100").
+ * @param {number} [req.query.limit=10] - Number of products per page.
+ * @param {number} [req.query.page=1] - Page number.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ */
+
+/**
+ * Retrieves a single product by ID.
+ * @function
+ * @async
+ * @param {Object} req - Express request object.
+ * @param {string} req.params.id - ID of the product to retrieve.
+ * @param {Object} res - Express response object.
+ * @throws {AppError} If the product is not found.
+ * @returns {Promise<void>}
+ */
+
+/**
+ * Updates an existing product by ID.
+ * @function
+ * @async
+ * @param {Object} req - Express request object.
+ * @param {string} req.params.id - ID of the product to update.
+ * @param {Object} req.body - Request body containing updated product details.
+ * @param {string} [req.body.name] - Updated name of the product.
+ * @param {string} [req.body.description] - Updated description of the product.
+ * @param {string} [req.body.brand] - Updated brand of the product.
+ * @param {string} [req.body.category] - Updated category of the product.
+ * @param {Array<string>} [req.body.sizes] - Updated sizes available for the product.
+ * @param {Array<string>} [req.body.colors] - Updated colors available for the product.
+ * @param {number} [req.body.price] - Updated price of the product.
+ * @param {number} [req.body.totalQty] - Updated total quantity of the product.
+ * @param {Object} res - Express response object.
+ * @returns {Promise<void>}
+ */
 /* eslint-disable no-unused-vars */
 import Product from "../model/productModel.js";
 import Brand from "../model/brandModel.js";
@@ -6,7 +74,9 @@ import asyncHandler from "../utils/asyncErrorHandler.js";
 import AppError from "../utils/appError.js";
 
 // create products
-const createProducts = asyncHandler(async (req, res, next) => {
+const createProducts = asyncHandler(async (req, res) => {
+  // Get image from client
+  const convertedImgs = req.files.map((file) => file.path);
   const { name, description, brand, category, sizes, colors, price, totalQty } =
     req.body;
 
@@ -43,6 +113,7 @@ const createProducts = asyncHandler(async (req, res, next) => {
     user: req.userAuth,
     price,
     totalQty,
+    image: convertedImgs,
   });
   // Push the category to the product
   checkCategory.products.push(product);
@@ -55,12 +126,14 @@ const createProducts = asyncHandler(async (req, res, next) => {
   res.status(201).json({
     status: "success",
     message: "Product created successfully",
-    product,
+    data: {
+      product,
+    },
   });
 });
 
 // Get all products
-const getProducts = asyncHandler(async (req, res, next) => {
+const getProducts = asyncHandler(async (req, res) => {
   const products = Product.find();
   // filter by name
   if (req.query.name) {
@@ -121,15 +194,17 @@ const getProducts = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    results: allProducts.length,
-    total,
-    pagination,
-    allProducts,
+    data: {
+      results: allProducts.length,
+      total,
+      pagination,
+      allProducts,
+    },
   });
 });
 
 // Get single product
-const getSingleProduct = asyncHandler(async (req, res, next) => {
+const getSingleProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id).populate("reviews");
 
   if (!product) {
@@ -138,12 +213,14 @@ const getSingleProduct = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    product,
+    data: {
+      product,
+    },
   });
 });
 
 // Update Product
-const updateProduct = asyncHandler(async (req, res, next) => {
+const updateProduct = asyncHandler(async (req, res) => {
   const { name, description, brand, category, sizes, colors, price, totalQty } =
     req.body;
   // Update product
@@ -167,7 +244,9 @@ const updateProduct = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "Product updated successfully",
-    product,
+    data: {
+      product,
+    },
   });
 });
 export { createProducts, getProducts, getSingleProduct, updateProduct };

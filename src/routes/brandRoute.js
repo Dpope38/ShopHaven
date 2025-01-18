@@ -1,5 +1,6 @@
 import express from "express";
 import isLogin from "../middleware/isLogin.js";
+import isAdmin from "../middleware/isAdmin.js";
 
 import {
   createBrand,
@@ -11,10 +12,10 @@ import {
 
 const brandRoutes = express.Router();
 
-brandRoutes.get("/", getAllBrand);
-brandRoutes.post("/", isLogin, createBrand);
-brandRoutes.get("/:id", getSingleBrand);
-brandRoutes.put("/:id", updateBrandCtrl);
-brandRoutes.delete("/:id", deleteBrandctrl);
+brandRoutes.post("/", isLogin, isAdmin, createBrand);
+brandRoutes.get("/", isLogin, getAllBrand);
+brandRoutes.get("/:id", isLogin, getSingleBrand);
+brandRoutes.put("/:id", isLogin, updateBrandCtrl);
+brandRoutes.delete("/:id", isLogin, isAdmin, deleteBrandctrl);
 
 export default brandRoutes;

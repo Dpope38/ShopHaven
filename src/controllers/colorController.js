@@ -1,3 +1,47 @@
+/**
+ * @desc Get all Colors
+ * @route GET /api/v1/Color
+ * @access Private/Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Promise<void>}
+ */
+
+/**
+ * @desc Create a Color
+ * @route POST /api/v1/Color
+ * @access Private/Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Promise<void>}
+ */
+
+/**
+ * @desc Get a single Color
+ * @route GET /api/v1/color/:id
+ * @access Private/Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Promise<void>}
+ */
+
+/**
+ * @desc Update a Color
+ * @route PUT /api/v1/Color/:id
+ * @access Private/Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Promise<void>}
+ */
+
+/**
+ * @desc Delete a Color
+ * @route DELETE /api/v1/Color/:id
+ * @access Private/Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Promise<void>}
+ */
 import mongoose from "mongoose";
 import Color from "../model/color.js";
 import asyncErrorHandler from "../utils/asyncErrorHandler.js";
@@ -19,12 +63,6 @@ const getAllColor = asyncErrorHandler(async (req, res) => {
     data: { color },
   });
 });
-
-/*
-  @desc Creates a Color
-  @route POST /api/v1/Color
-  @access private/admin
- */
 
 const createColor = asyncErrorHandler(async (req, res) => {
   // check if name exist...
@@ -48,12 +86,6 @@ const createColor = asyncErrorHandler(async (req, res) => {
   });
 });
 
-/*
-  @desc get a single  Color
-  @route GET /api/v1/color/:id
-  @access private/admin
- */
-
 const getSingleColor = asyncErrorHandler(async (req, res) => {
   const color = await Color.findById(req.params.id);
 
@@ -66,12 +98,6 @@ const getSingleColor = asyncErrorHandler(async (req, res) => {
     data: { color },
   });
 });
-
-/*
-  @desc update   Color
-  @route PUT /api/v1/Color/:id
-  @access private/admin
- */
 
 const updateColorCtrl = asyncErrorHandler(async (req, res) => {
   const { name } = req.body;

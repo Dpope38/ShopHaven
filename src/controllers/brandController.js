@@ -3,10 +3,13 @@ import Brand from "../model/brandModel.js";
 import AppError from "../utils/appError.js";
 import asyncHandler from "../utils/asyncErrorHandler.js";
 
-/*
-  @desc get all Brand
-  @route GET /api/v1/brand
-  @access private/admin
+/**
+ * @desc Get all brands
+ * @route GET /api/v1/brand
+ * @access Private/Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
  */
 
 const getAllBrand = asyncHandler(async (req, res, next) => {
@@ -20,10 +23,13 @@ const getAllBrand = asyncHandler(async (req, res, next) => {
   });
 });
 
-/*
-  @desc Creates a brand
-  @route POST /api/v1/brand
-  @access private/admin
+/**
+ * @desc Create a brand
+ * @route POST /api/v1/brand
+ * @access Private/Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
  */
 
 const createBrand = asyncHandler(async (req, res, next) => {
@@ -52,10 +58,13 @@ const createBrand = asyncHandler(async (req, res, next) => {
   });
 });
 
-/*
-  @desc get a single  brand
-  @route GET /api/v1/brands/:id
-  @access private/admin
+/**
+ * @desc Get a single brand
+ * @route GET /api/v1/brands/:id
+ * @access Private/Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
  */
 
 const getSingleBrand = asyncHandler(async (req, res, next) => {
@@ -70,10 +79,13 @@ const getSingleBrand = asyncHandler(async (req, res, next) => {
   });
 });
 
-/*
-  @desc update   brand
-  @route PUT /api/v1/brand/:id
-  @access private/admin
+/**
+ * @desc Update a brand
+ * @route PUT /api/v1/brand/:id
+ * @access Private/Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
  */
 
 const updateBrandCtrl = asyncHandler(async (req, res, next) => {
@@ -99,6 +111,14 @@ const updateBrandCtrl = asyncHandler(async (req, res, next) => {
   });
 });
 
+/**
+ * @desc Delete a brand
+ * @route DELETE /api/v1/brand/:id
+ * @access Private/Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const deleteBrandctrl = asyncHandler(async (req, res, next) => {
   const brand = await Brand.findByIdAndDelete(req.params.id);
   if (!brand) {

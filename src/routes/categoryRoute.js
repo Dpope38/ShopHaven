@@ -1,5 +1,7 @@
 import express from "express";
 import isLogin from "../middleware/isLogin.js";
+import isAdmin from "../middleware/isAdmin.js";
+import categoryUpload from "../db_configs/categoryFile.js";
 
 import {
   getAllCategories,
@@ -12,9 +14,15 @@ import {
 const categoryRoutes = express.Router();
 
 categoryRoutes.get("/", getAllCategories);
-categoryRoutes.post("/", isLogin, createCategory);
-categoryRoutes.get("/:id", getSingleCategory);
-categoryRoutes.put("/:id", updateCategoryCtrl);
-categoryRoutes.delete("/:id", deleteCategoryctrl);
+categoryRoutes.post(
+  "/",
+  isLogin,
+  isAdmin,
+  categoryUpload.single("file"),
+  createCategory,
+);
+categoryRoutes.get("/:id", isLogin, isAdmin, getSingleCategory);
+categoryRoutes.put("/:id", isLogin, isAdmin, updateCategoryCtrl);
+categoryRoutes.delete("/:id", isLogin, isAdmin, deleteCategoryctrl);
 
 export default categoryRoutes;
