@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import sanitize from "express-mongo-sanitize"
 import xss from "xss-clean"
+import cors from "cors"
 import rateLimit from 'express-rate-limit'
 import userRouter from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
@@ -99,6 +100,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api",limiter)
 app.use(sanitize());
 app.use(xss())
+app.use(cors())
 app.use("/api/v1/product", productRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/category", categoryRoutes);

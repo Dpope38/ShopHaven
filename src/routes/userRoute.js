@@ -3,6 +3,7 @@ import {
   registerUser,
   loginUser,
   getUserCtrl,
+  logoutUser,
   updateShippingAddressCtrl,
 } from "../controllers/userController.js";
 import isLogin from "../middleware/isLogin.js";
@@ -12,6 +13,8 @@ const userRouter = express.Router();
 
 userRouter.post("/register", registerUser);
 userRouter.post("/login", loginUser);
+userRouter.post("/logout", isLogin, logoutUser);
+
 userRouter.get("/profile", isLogin, isAdmin, getUserCtrl);
 userRouter.put("/update/shipping", isLogin, isAdmin, updateShippingAddressCtrl);
 

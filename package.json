@@ -4,8 +4,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "switch:dev": "./switch-env.sh dev", 
+    "switch:prod": "./switch-env.sh prod", 
     "lint": "eslint .",
-    "nod": "nodemon --exec \"npm run lint && node\" ./server.js",
+    "testApp": "nodemon --exec \"npm run lint && node\" ./server.js",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch"
   },
@@ -21,6 +23,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cloudinary": "^1.41.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-mongo-sanitize": "^2.2.0",

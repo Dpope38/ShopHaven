@@ -89,7 +89,9 @@ const registerUser = asyncErrorHandler(async (req, res) => {
   });
 });
 
-// Login User
+// @desc  Register User
+// @route Post api/v1/users/login
+// access Private/Admin
 const loginUser = asyncErrorHandler(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -108,7 +110,7 @@ const loginUser = asyncErrorHandler(async (req, res) => {
   if (!isPasswordValid) {
     throw new AppError("Invalid email or password", 401);
   }
-  res.cookie("bearer", token, {
+  res.cookie("token", token, {
     maxAge: process.env.JWT_EPXPIRES_IN,
     httpOnly: true,
   });
@@ -123,6 +125,9 @@ const loginUser = asyncErrorHandler(async (req, res) => {
   });
 });
 
+// @desc  Get User
+// @route GET api/v1/users
+// access Private/Admin
 const getUserCtrl = asyncErrorHandler(async (req, res) => {
   const user = await User.findById(req.userAuth).populate("orders");
   if (!user) {
@@ -135,6 +140,25 @@ const getUserCtrl = asyncErrorHandler(async (req, res) => {
     },
   });
 });
+
+// @desc  Logout as User
+// @route PUT api/v1/users/logout
+// access Private/Admin
+const logoutUser = asyncErrorHandler(async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "None",
+  });
+  res.status(200).json({
+    status: "success",
+    message: "Logout successful",
+  });
+});
+
+// @desc  Update User shipping address
+// @route PUT api/v1/users//update/shipping
+// access Private/Admin
 
 const updateShippingAddressCtrl = asyncErrorHandler(async (req, res, next) => {
   const {
@@ -173,8 +197,14 @@ const updateShippingAddressCtrl = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     Status: "Successful",
     message: "User shipping Address updated Successfully",
-    user,
+    data: { user },
   });
 });
 
-export { registerUser, loginUser, getUserCtrl, updateShippingAddressCtrl };
+export {
+  registerUser,
+  loginUser,
+  getUserCtrl,
+  updateShippingAddressCtrl,
+  logoutUser,
+};

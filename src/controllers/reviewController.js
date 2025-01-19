@@ -65,7 +65,7 @@ const createReview = asyncHandler(async (req, res) => {
   res.status(201).json({
     status: "success",
     message: "Review created successfully",
-    data: review,
+    data: { review },
   });
 });
 

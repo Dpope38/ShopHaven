@@ -47,12 +47,6 @@ import Color from "../model/color.js";
 import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 import AppError from "../utils/appError.js";
 
-/*
-  @desc get all Color
-  @route GET /api/v1/Color
-  @access private/admin
- */
-
 const getAllColor = asyncErrorHandler(async (req, res) => {
   const color = await Color.find();
 

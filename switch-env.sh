@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Content to switch among environment {Development or Production}
+# Usage: ./switch-env.sh dev || ./switch-env.sh prod
 if [ "$1" = "prod" ] || [ "$1" = "production" ]; then
     echo "Switching to production environment..."
     cp .env.production .env
