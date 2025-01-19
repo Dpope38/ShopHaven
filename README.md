@@ -83,8 +83,29 @@ The server will start on the specified port (or default to 7000 if not changed i
   - `GET /api/v1/orders/:id` - Get a single order by ID (admin only).
   - `POST /api/v1/orders` - Create a new order.
   - `PUT /api/v1/orders/:id` - Update an order by ID (admin only).
-  - `GET /api/v1/orders/sales/sum` - Get total summary of order
+  - `GET /api/v1/orders/sales/sum` - Get a total summary of order
 
+- **Colors:**
+  - `GET /api/v1/color` - Get all orders (admin only).
+  - `GET /api/v1/color/:id` - Get a single color by ID (admin only).
+  - `POST /api/v1/color` - Create a new color.
+  - `PUT /api/v1/color/:id` - Update a color by ID (admin only).
+
+- **Categories:**
+  - `GET /api/v1/category` - Get all categories (admin only).
+  - `GET /api/v1/category/:id` - Get a single category by ID (admin only).
+  - `POST /api/v1/category` - Create a new category.
+  - `PUT /api/v1/category/:id` - Update a category by ID (admin only).
+  - `DEL /api/v1/category/:id` -Delete
+
+- **Categories:**
+  - `GET /api/v1/coupons` - Get all coupons (admin only).
+  - `GET /api/v1/coupons/:id` - Get a single coupon by ID (admin only).
+  - `POST /api/v1/coupon` - Create a new coupon.
+  - `PUT /api/v1/coupons/:id` - Update a coupon by ID (admin only).
+  - `DEL /api/v1/coupon/:id` -Delete coupon by ID
+
+  
 
 ## Security
 
@@ -102,7 +123,7 @@ This API implements several security measures, including:
 
 You can access the API documentation by visiting the root route of the application. The documentation provides detailed information about the API endpoints, request/response formats, and usage examples.
 
-**How to View:** Simply open your web browser and go to the root route, for example, `http://localhost:5000`.
+**How to View:** Simply open your web browser and go to the root route, for example, `http://localhost:7000`.
 
 **Guidance:** Refer to this documentation for instructions on interacting with the API effectively and making the most of its features.
 
@@ -135,6 +156,33 @@ You can find the collection in the `ecommerce-api.postman_collection` file. Impo
     - Be mindful of the cookie's maximum size.
     - By default, the cookie is sent back to its origin server. If your frontend and backend are on different servers, ensure proper setup, like using a proxy in development (e.g., `"proxy": "server-url"`) or redirects in production.
 
-- **Helpful Resource for DocGen on Windows:**
 
-  - This article provides useful insights into using DocGen on Windows for generating Postman API documentation: [Using DocGen on Windows to Generate Postman API Documentation](https://sedx876.medium.com/using-docgen-on-windows-to-generate-postman-api-documentation-c4fc1724fef2)
+## Error Handling
+
+The API follows standard HTTP status codes and provides error responses in JSON format. In case of an error, the response will contain relevant information about the error, such as error code, message, and possibly additional details.
+
+## Testing
+
+To run the test suite, execute the following command:
+
+```bash
+npm test
+```
+
+The tests cover different use cases and edge scenarios to ensure the correctness of the application.
+
+## Contributing
+
+We welcome contributions to improve the project. To contribute, follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them with descriptive commit messages.
+4. Push your changes to your forked repository.
+5. Create a pull request to the main repository.
+
+We will review your pull request and provide feedback as soon as possible.
+
+## License
+
+
