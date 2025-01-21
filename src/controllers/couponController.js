@@ -7,7 +7,7 @@ import AppError from "../utils/appError.js";
  * @access Private/Admin
  */
 
-const createCoupon = asyncHandler(async (req, res) => {
+const createCoupon = asyncHandler(async (req, res, next) => {
   const { code, startDate, endDate, discount } = req.body;
   // Check if Admin
   // Check if Coupon exist
@@ -15,10 +15,10 @@ const createCoupon = asyncHandler(async (req, res) => {
     code,
   });
   if (couponExist) {
-    throw new AppError("Coupon Already Exist", 404);
+    throw next(new AppError("Coupon Already Exist", 404));
   }
   if (isNaN(discount)) {
-    throw new AppError("Dicount Value must be a number", 404);
+    throw next(new AppError("Dicount Value must be a number", 404));
   }
   const coupon = await Coupon.create({
     code: code.toUpperCase(),

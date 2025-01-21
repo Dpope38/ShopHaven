@@ -58,13 +58,13 @@ const getAllColor = asyncErrorHandler(async (req, res) => {
   });
 });
 
-const createColor = asyncErrorHandler(async (req, res) => {
+const createColor = asyncErrorHandler(async (req, res, next) => {
   // check if name exist...
   const { name } = req.body;
   const checkedColor = await Color.findOne({ name });
 
   if (checkedColor) {
-    throw new AppError("Color already exists", 400);
+    throw next(new AppError("Color already exists", 400));
   }
   const createColor = await Color.create({
     name: name.toLowerCase(),
@@ -80,11 +80,11 @@ const createColor = asyncErrorHandler(async (req, res) => {
   });
 });
 
-const getSingleColor = asyncErrorHandler(async (req, res) => {
+const getSingleColor = asyncErrorHandler(async (req, res, next) => {
   const color = await Color.findById(req.params.id);
 
   if (!Color) {
-    throw new AppError("Color ID not found", 404);
+    throw next(new AppError("Color ID not found", 404));
   }
   res.status(200).json({
     status: "success",
@@ -93,12 +93,12 @@ const getSingleColor = asyncErrorHandler(async (req, res) => {
   });
 });
 
-const updateColorCtrl = asyncErrorHandler(async (req, res) => {
+const updateColorCtrl = asyncErrorHandler(async (req, res, next) => {
   const { name } = req.body;
 
   // check if the id object format is correct (optional)
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    throw new AppError("Invalid ID! Provide a valid ID", 400);
+    throw next(new AppError("Invalid ID! Provide a valid ID", 400));
   }
   // update brand
   const color = await Color.findByIdAndUpdate(
@@ -120,11 +120,11 @@ const updateColorCtrl = asyncErrorHandler(async (req, res) => {
   });
 });
 
-const deleteColorctrl = asyncErrorHandler(async (req, res) => {
+const deleteColorctrl = asyncErrorHandler(async (req, res, next) => {
   const color = await Color.findByIdAndDelete(req.params.id);
 
   if (!color) {
-    throw new AppError("Could not found and delete Color", 400);
+    throw next(new AppError("Could not found and delete Color", 400));
   }
   res.status(200).json({
     status: "Success",

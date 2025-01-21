@@ -95,17 +95,15 @@ const globalError = (err, req, res, next) => {
   if (process.env.NODE_ENV === "development") {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
-    let error = { ...err };
-    if (error.name === "CastError") error = handleCastErrorDB(error);
-    if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-    if (error.name === "ValidationError")
-      error = handleValidationErrorDB(error);
-    if (error.name === "JsonWebTokenError")
-      error = new AppError("Invalid token. Please log in again", 401);
-    if (error.name === "TokenExpiredError")
-      error = new AppError("Your token has expired! Please log in again", 401);
+    if (err.name === "CastError") err = handleCastErrorDB(error);
+    if (err.code === 11000) err = handleDuplicateFieldsDB(err);
+    if (err.name === "ValidationError") err = handleValidationErrorDB(err);
+    if (err.name === "JsonWebTokenError")
+      err = new AppError("Invalid token. Please log in again", 401);
+    if (err.name === "TokenExpiredError")
+      err = new AppError("Your token has expired! Please log in again", 401);
 
-    sendErrorProd(error, res);
+    sendErrorProd(err, res);
   }
 };
 

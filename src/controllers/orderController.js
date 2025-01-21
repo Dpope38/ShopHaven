@@ -34,10 +34,10 @@ const createOrder = asyncHandler(async (req, res, next) => {
     code: coupon.toUpperCase(),
   });
   if (couponFound.isExpired) {
-    throw new AppError("Coupon invalid or Expired");
+    throw next(new AppError("Coupon invalid or Expired"));
   }
   if (!couponFound) {
-    throw new AppError("Coupon does not exist");
+    throw next(new AppError("Coupon does not exist"));
   }
   // Get discound
   const discount = couponFound.discount / 100;
@@ -46,15 +46,12 @@ const createOrder = asyncHandler(async (req, res, next) => {
   // Find the user...
   const user = await User.findById(req.userAuth); // This Line is successful
   if (!user.hasShippingAddress) {
-    throw new AppError("Please provide shipping address", 400);
+    throw next(new AppError("Please provide shipping address", 400));
   }
-  // console.log(user);
-  // console.log(orderItems, shippingAddress, totalPrice);
 
   // check if order is not empty
   if (orderItems.length <= 0) {
-    // throw new Error("No Order Items");
-    throw new AppError("No order found! ", 404);
+    throw next(new AppError("No order found! ", 404));
   }
   // place/create order => save into DB
 
@@ -65,7 +62,6 @@ const createOrder = asyncHandler(async (req, res, next) => {
     // status,
     user,
   });
-  console.log(order);
 
   const products = await Product.find({ _id: { $in: orderItems } });
 

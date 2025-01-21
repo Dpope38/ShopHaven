@@ -111,7 +111,8 @@ app.use("/api/v1/orders", orderRoute);
 app.use("/api/v1/coupons", couponRouter);
 
 app.all("*", (req, res, next) => {
-  throw new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
+  const err=  new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
+  next(err);
 });
 
 app.use(globalError);

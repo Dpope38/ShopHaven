@@ -26,14 +26,14 @@ import asyncHandler from "../utils/asyncErrorHandler.js";
 // @ access admin/private
  */
 
-const createReview = asyncHandler(async (req, res) => {
+const createReview = asyncHandler(async (req, res, next) => {
   const { productId } = req.params;
   const { product, message, rating } = req.body;
 
   // Check if product exists
   const productFound = await Product.findById(productId).populate("reviews");
   if (!productFound) {
-    throw new AppError("Product not found", 404);
+    throw next(new AppError("Product not found", 404));
   }
   // Check if user has already reviewed this product
   // const existingReview = await Review.findOne({
@@ -42,12 +42,10 @@ const createReview = asyncHandler(async (req, res) => {
   // });
   // console.log(existingReview);
   const hasReviewed = productFound.reviews.find((review) => {
-    console.log(review);
     return review.user.toString() === req.userAuth.toString();
   });
-  console.log(hasReviewed);
   if (hasReviewed) {
-    throw new AppError("You have already reviewed this product", 400);
+    throw next(new AppError("You have already reviewed this product", 400));
   }
 
   // Create the review with proper references

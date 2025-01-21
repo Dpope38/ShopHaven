@@ -65,7 +65,7 @@ import tokenHeader from "../utils/tokenHeader.js";
 // @desc  Register User
 // @route Post api/v1/users/register
 // access Private/Admin
-const registerUser = asyncErrorHandler(async (req, res) => {
+const registerUser = asyncErrorHandler(async (req, res, next) => {
   const { fullname, email, password } = req.body;
 
   const salt = bcrypt.genSaltSync(10);
@@ -73,7 +73,7 @@ const registerUser = asyncErrorHandler(async (req, res) => {
 
   const userExists = await User.findOne({ email });
   if (userExists) {
-    throw new AppError("User already exists", 400);
+    throw next(new AppError("User already exists", 400));
   }
   const userInfo = await User.create({
     fullname,
@@ -92,23 +92,23 @@ const registerUser = asyncErrorHandler(async (req, res) => {
 // @desc  Register User
 // @route Post api/v1/users/login
 // access Private/Admin
-const loginUser = asyncErrorHandler(async (req, res) => {
+const loginUser = asyncErrorHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    throw new AppError("Please provide email and password", 400);
+    throw next(new AppError("Please provide email and password", 400));
   }
 
   // 2. Find user and explicitly select password field
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
-    throw new AppError("Invalid email or password", 401);
+    throw next(new AppError("Invalid email or password", 401));
   }
 
   const token = generateToken(user._id);
   // 3. Verify password
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
-    throw new AppError("Invalid email or password", 401);
+    throw next(new AppError("Invalid email or password", 401));
   }
   res.cookie("token", token, {
     maxAge: process.env.JWT_EPXPIRES_IN,
@@ -128,10 +128,10 @@ const loginUser = asyncErrorHandler(async (req, res) => {
 // @desc  Get User
 // @route GET api/v1/users
 // access Private/Admin
-const getUserCtrl = asyncErrorHandler(async (req, res) => {
+const getUserCtrl = asyncErrorHandler(async (req, res, next) => {
   const user = await User.findById(req.userAuth).populate("orders");
   if (!user) {
-    throw new AppError("User not found", 404);
+    throw next(new AppError("User not found", 404));
   }
   res.status(200).json({
     status: "success",
@@ -192,7 +192,7 @@ const updateShippingAddressCtrl = asyncErrorHandler(async (req, res, next) => {
   );
 
   if (!user) {
-    throw new AppError("no Id user  for update", 404);
+    throw next(new AppError("no Id user  for update", 404));
   }
   res.status(200).json({
     Status: "Successful",

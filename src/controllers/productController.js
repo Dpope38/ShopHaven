@@ -74,7 +74,7 @@ import asyncHandler from "../utils/asyncErrorHandler.js";
 import AppError from "../utils/appError.js";
 
 // create products
-const createProducts = asyncHandler(async (req, res) => {
+const createProducts = asyncHandler(async (req, res, next) => {
   // Get image from client
   const convertedImgs = req.files.map((file) => file.path);
   const { name, description, brand, category, sizes, colors, price, totalQty } =
@@ -85,7 +85,7 @@ const createProducts = asyncHandler(async (req, res) => {
   //CHECK IF PRODUCT already exists...
 
   if (productExist) {
-    throw new AppError("Product already exists", 409);
+    throw next(new AppError("Product already exists", 409));
   }
 
   const brandChecked = await Brand.findOne({
@@ -99,7 +99,7 @@ const createProducts = asyncHandler(async (req, res) => {
     name: { $regex: new RegExp(`^${category}$`, "i") },
   });
   if (!checkCategory) {
-    throw new AppError("Category does not exist, provide category", 404);
+    throw next(new AppError("Category does not exist, provide category", 404));
   }
   // create product...
 
@@ -133,7 +133,7 @@ const createProducts = asyncHandler(async (req, res) => {
 });
 
 // Get all products
-const getProducts = asyncHandler(async (req, res) => {
+const getProducts = asyncHandler(async (req, res, next) => {
   const products = Product.find();
   // filter by name
   if (req.query.name) {
@@ -204,11 +204,11 @@ const getProducts = asyncHandler(async (req, res) => {
 });
 
 // Get single product
-const getSingleProduct = asyncHandler(async (req, res) => {
+const getSingleProduct = asyncHandler(async (req, res, next) => {
   const product = await Product.findById(req.params.id).populate("reviews");
 
   if (!product) {
-    throw new AppError("Product not found", 404);
+    throw next(new AppError("Product not found", 404));
   }
 
   res.status(200).json({

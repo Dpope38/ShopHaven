@@ -43,7 +43,7 @@ const createCategory = asyncHandler(async (req, res, next) => {
   });
 
   if (checkCategory) {
-    throw new AppError("Category already exists", 400);
+    throw next(new AppError("Category already exists", 400));
   }
 
   // create category
@@ -75,7 +75,7 @@ const getSingleCategory = asyncHandler(async (req, res, next) => {
 
   // Check if category exists
   if (!category) {
-    throw new AppError("Category not found", 404);
+    throw next(new AppError("Category not found", 404));
   }
 
   res.status(200).json({
@@ -109,7 +109,7 @@ const updateCategoryCtrl = asyncHandler(async (req, res, next) => {
     { new: true },
   );
   if (!category) {
-    throw new AppError("Category not found", 404);
+    throw next(new AppError("Category not found", 404));
   }
 
   res.status(200).json({
@@ -133,7 +133,7 @@ const updateCategoryCtrl = asyncHandler(async (req, res, next) => {
 const deleteCategoryctrl = asyncHandler(async (req, res, next) => {
   const category = await Category.findByIdAndDelete(req.params.id);
   if (!category) {
-    throw new AppError("Category not found", 404);
+    throw next(new AppError("Category not found", 404));
   }
 
   res.status(201).json({

@@ -41,7 +41,7 @@ const createBrand = asyncHandler(async (req, res, next) => {
     name: { $regex: new RegExp(`^${name}$`, "i") },
   });
   if (brandChecked) {
-    throw new AppError("Brand already exists", 400);
+    throw next(new AppError("Brand already exists", 400));
   }
 
   // Create brand
@@ -70,7 +70,7 @@ const createBrand = asyncHandler(async (req, res, next) => {
 const getSingleBrand = asyncHandler(async (req, res, next) => {
   const brand = await Brand.findById(req.params.id);
   if (!brand) {
-    throw AppError("No Id for this brand found", 404);
+    throw next(AppError("No Id for this brand found", 404));
   }
   res.status(200).json({
     status: "success",
@@ -101,7 +101,8 @@ const updateBrandCtrl = asyncHandler(async (req, res, next) => {
   );
 
   if (!brand) {
-    throw new AppError("Could not Found and update Brand!", 404);
+    const err = new AppError("Could not Found and update Brand!", 404);
+    throw next(err);
   }
 
   res.status(200).json({
@@ -122,7 +123,7 @@ const updateBrandCtrl = asyncHandler(async (req, res, next) => {
 const deleteBrandctrl = asyncHandler(async (req, res, next) => {
   const brand = await Brand.findByIdAndDelete(req.params.id);
   if (!brand) {
-    throw new AppError("Could not found and delete Brand", 400);
+    throw next(new AppError("Could not found and delete Brand", 400));
   }
   res.status(201).json({
     status: "Success",
