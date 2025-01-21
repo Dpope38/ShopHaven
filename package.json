@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "testApp": "nodemon --exec \"npm run lint && node\" ./server.js",
     "test": "jest --detectOpenHandles",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "build": "npm install"
   },
   "jest": {
     "testEnvironment": "node",
