@@ -17,8 +17,7 @@
      "transform": {
        "^.+\\.js$": "babel-jest"
      }
-   }
-  },
+   },
   "author": "",
   "license": "ISC",
   "description": "",
