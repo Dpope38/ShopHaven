@@ -4,8 +4,6 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "switch:dev": "./switch-env.sh dev", 
-    "switch:prod": "./switch-env.sh prod", 
     "lint": "eslint .",
     "testApp": "nodemon --exec \"npm run lint && node\" ./server.js",
     "test": "jest --detectOpenHandles",
