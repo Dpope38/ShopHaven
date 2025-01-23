@@ -2,7 +2,7 @@ import express from "express";
 import {
   registerUser,
   loginUser,
-  getUserCtrl,
+  getUserByIdCtrl,
   logoutUser,
   updateShippingAddressCtrl,
 } from "../controllers/userController.js";
@@ -15,7 +15,7 @@ userRouter.post("/register", registerUser);
 userRouter.post("/login", loginUser);
 userRouter.post("/logout", isLogin, logoutUser);
 
-userRouter.get("/profile", isLogin, isAdmin, getUserCtrl);
+userRouter.get("/profile/:id", isLogin, isAdmin, getUserByIdCtrl);
 userRouter.put("/update/shipping", isLogin, isAdmin, updateShippingAddressCtrl);
 
 export default userRouter;

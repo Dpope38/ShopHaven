@@ -126,9 +126,9 @@ const loginUser = asyncErrorHandler(async (req, res, next) => {
 });
 
 // @desc  Get User
-// @route GET api/v1/users
+// @route GET api/v1/users/id
 // access Private/Admin
-const getUserCtrl = asyncErrorHandler(async (req, res, next) => {
+const getUserByIdCtrl = asyncErrorHandler(async (req, res, next) => {
   const user = await User.findById(req.userAuth).populate("orders");
   if (!user) {
     throw next(new AppError("User not found", 404));
@@ -204,7 +204,7 @@ const updateShippingAddressCtrl = asyncErrorHandler(async (req, res, next) => {
 export {
   registerUser,
   loginUser,
-  getUserCtrl,
+  getUserByIdCtrl,
   updateShippingAddressCtrl,
   logoutUser,
 };

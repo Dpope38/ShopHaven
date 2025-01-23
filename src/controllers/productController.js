@@ -88,9 +88,11 @@ const createProducts = asyncHandler(async (req, res, next) => {
     throw next(new AppError("Product already exists", 409));
   }
 
+  // Check if no brand
   const brandChecked = await Brand.findOne({
     name: { $regex: new RegExp(`^${brand}$`, "i") },
   });
+
   if (!brandChecked) {
     throw new AppError("Brand does not exist, provide Brand", 404);
   }
