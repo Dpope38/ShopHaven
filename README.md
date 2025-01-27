@@ -123,9 +123,10 @@ This API implements several security measures, including:
 
 You can access the API documentation by visiting the root route of the application. The documentation provides detailed information about the API endpoints, request/response formats, and usage examples.
 
-**How to View:** Simply open your web browser and go to the root route, for example, `http://localhost:7000`.
+**How to View:** Simply open your web browser and go to the root route, for example, `https://shophaven-4.onrender.com/api/v1/{product}`.
 
-**Guidance:** Refer to this documentation for instructions on interacting with the API effectively and making the most of its features.
+
+**Guidance:** Refer to this documentation for instructions on interacting with the API effectively and making the most of its features, [shophave-api-docs.apidog.io](shophave-api-docs.apidog.io)
 
 #### Postman Documentation
 
@@ -166,7 +167,7 @@ The API follows standard HTTP status codes and provides error responses in JSON 
 To run the test suite, execute the following command:
 
 ```bash
-npm test
+npm run test
 ```
 
 The tests cover different use cases and edge scenarios to ensure the correctness of the application.
